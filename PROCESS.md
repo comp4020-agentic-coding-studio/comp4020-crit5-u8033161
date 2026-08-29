@@ -21,41 +21,17 @@ One paragraph: the thing, and the idea behind it.
 
 ## The moments that mattered
 
-Three or four for an assignment; fewer is fine for a weekly prototype. Keep the
-list short so each moment has room to do all four jobs:
-
-1. **what happened** --- the problem, or the thing that went wrong
-2. **what you did instead of the obvious thing** --- the call you made, and why
-   it beat the obvious one
-3. **how you knew it was right** --- the check you ran, the viewport you looked
-   at, what you read before accepting the diff
-4. **the citation** --- a commit or commit range, a `CLAUDE.md` change, a check
-   that went from red to green, a prompt paired with the commit it produced
-
-Jobs 2 and 3 are the ones the repo can't tell a reader on its own, so they're
-where the marks are. The strongest moments are the ones where a correction
-landed in the **harness** --- the standards and checks your work has to satisfy
---- rather than in a retry: a rule added to `CLAUDE.md`, a check wired up, an
-attempt thrown away. Retrying until it passes is the routine case, and changing
-what the work runs against is the skilled one.
-
-Cite each moment as a link whose text is the commit hash or range and whose
-target is this repo's commit or compare URL, so a reader clicks straight to the
-evidence:
-
-- one commit: [`a1b2c3d`](https://github.com/YOUR-ORG/YOUR-REPO/commit/a1b2c3d)
-- a range:
-  [`a1b2c3d...e4f5a6b`](https://github.com/YOUR-ORG/YOUR-REPO/compare/a1b2c3d...e4f5a6b)
-
-To pair a prompt with the commit it produced, quote the prompt (curated, not a
-full transcript) next to the citation:
-
-> the prompt, verbatim
-
-Screenshots are welcome where one carries the verification better than a
-sentence does. Commit the file to this repo and link it with a **relative**
-path, which is what makes it render on GitHub: `![alt text](docs/before.png)`.
-Images don't count towards the word count and don't replace the citation.
+1. **Catching a glow bug only by playing, not reading.** I played the
+   finished game myself and found it confusing on first contact — multiple
+   tiles were glowing at once, mixing an idle shimmer with the actual
+   sequence flash, so it wasn't clear which tile was part of the pattern to
+   remember. I only described what confused me when I played it; I didn't
+   diagnose the code myself. The agent traced it to a class added on every
+   correct click that was never removed again, so every tile you'd ever
+   clicked correctly stayed lit for the rest of the game, and fixed it so
+   only the actively-flashing tile lights up during playback. I confirmed by
+   playing through several rounds that the glow no longer lingers
+   ([`4efbcfb`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-u8033161/commit/4efbcfb)).
 
 ## Before you ship
 
