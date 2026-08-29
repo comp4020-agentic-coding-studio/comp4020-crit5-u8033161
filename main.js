@@ -132,6 +132,58 @@ function pluck(freq, velocity) {
   }, cleanupAfter);
 }
 
+// Short synthesized effects for the panel's theme moments, sharing the same
+// audio graph as pluck() (getAudioContext()/masterGain/limiter). pluck()
+// itself is untouched — these are separate, simpler oscillator voices.
+function tone(freq, duration, type, peakGain, startDelay = 0) {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime + startDelay;
+  const osc = ctx.createOscillator();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, now);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(peakGain, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start(now);
+  osc.stop(now + duration + 0.02);
+}
+
+// Round-complete "unlock": a rising two-note blip, like an electronic latch
+// disengaging.
+function unlock() {
+  tone(660, 0.09, "sine", 0.25, 0);
+  tone(880, 0.16, "sine", 0.28, 0.09);
+}
+
+// Plain wrong click: short, low, blunt — deliberately less dramatic than the
+// alarm, so the two failure severities are distinguishable by ear.
+function buzz() {
+  tone(140, 0.16, "square", 0.3, 0);
+}
+
+// Trap hit: a harsher wailing siren, alternating between two pitches.
+function alarm() {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  osc.type = "sawtooth";
+  for (let i = 0; i < 6; i++) {
+    osc.frequency.setValueAtTime(i % 2 === 0 ? 660 : 420, now + i * 0.09);
+  }
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.32, now + 0.02);
+  gain.gain.setValueAtTime(0.32, now + 0.5);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.62);
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start(now);
+  osc.stop(now + 0.65);
+}
+
 function wait(ms) {
   return new Promise((resolveWait) => setTimeout(resolveWait, ms));
 }
@@ -146,8 +198,30 @@ function disableTiles(disabled) {
   for (const tile of tiles) tile.disabled = disabled;
 }
 
+// Seven-segment digit readout (see .digit/.seg-* in styles.css): each digit
+// is a span holding 7 segment spans, and CSS lights the right ones per
+// data-value. Rendered fresh each update so the counter/result spans scale
+// to any number of digits automatically.
+const SEGMENTS = ["a", "b", "c", "d", "e", "f", "g"];
+
+function makeDigit(value) {
+  const digit = document.createElement("span");
+  digit.className = "digit";
+  digit.dataset.value = value;
+  for (const seg of SEGMENTS) {
+    const bar = document.createElement("span");
+    bar.className = `seg seg-${seg}`;
+    digit.appendChild(bar);
+  }
+  return digit;
+}
+
+function renderDigits(el, value) {
+  el.replaceChildren(...String(value).split("").map(makeDigit));
+}
+
 function setRoundCounter(text) {
-  roundCounterEl.textContent = text;
+  renderDigits(roundCounterEl, text);
 }
 
 function hideResult() {
@@ -156,8 +230,8 @@ function hideResult() {
 
 function showResult(reached, best) {
   setRoundCounter("");
-  resultRoundEl.textContent = String(reached);
-  resultBestEl.textContent = String(best);
+  renderDigits(resultRoundEl, reached);
+  renderDigits(resultBestEl, best);
   resultEl.hidden = false;
 }
 
@@ -194,6 +268,7 @@ async function startRound() {
 function endGame(dramatic) {
   phase = "gameover";
   disableTiles(true);
+  dramatic ? alarm() : buzz();
   const reached = round;
   best = Math.max(best, reached);
   localStorage.setItem(BEST_KEY, String(best));
@@ -231,6 +306,8 @@ grid.addEventListener("click", (event) => {
   const outcome = judgeClick(sequence, recallIndex, index);
 
   if (outcome.result === "trap") {
+    bump(tile, "spark");
+    setTimeout(() => tile.classList.remove("spark"), 250);
     endGame(true);
     return;
   }
@@ -251,5 +328,8 @@ grid.addEventListener("click", (event) => {
   // round-complete
   phase = "advancing";
   disableTiles(true);
+  bump(grid, "success-flash");
+  setTimeout(() => grid.classList.remove("success-flash"), 380);
+  unlock();
   setTimeout(startRound, ROUND_COMPLETE_PAUSE);
 });

@@ -78,6 +78,17 @@ say what they are for.
   and inspecting peak amplitude over time — nothing in the test suite plays
   or measures audio, and it's inaudible-until-it-isn't on headphones at low
   volume.
+- A class added via `bump()`/`classList.add()` to trigger a one-shot CSS
+  animation (a flash, a pulse, a glow) needs an explicit removal timed to
+  that animation's own duration (`setTimeout` or an `animationend`
+  listener), or it silently persists once the animation finishes playing.
+  `bump()` itself only re-triggers the animation on a later call to the
+  *same* element — it does nothing for the element that was never called
+  again. This was the real cause of a stuck-glow bug found by playing the
+  game, not reading the code: every tile ever clicked correctly stayed lit
+  because nothing ever removed its one-shot class. Any new one-shot class
+  needs the same explicit, duration-matched cleanup from the moment it's
+  introduced.
 - Reading `getComputedStyle(el).boxShadow` (or any transitioned property)
   immediately after a JS-driven custom-property change can show the *old*
   value for the first frame or two, even though the custom property itself
