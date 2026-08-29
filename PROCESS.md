@@ -17,7 +17,14 @@ cover every deliverable.
 
 ## What I built
 
-One paragraph: the thing, and the idea behind it.
+Pattern is a 3x3 flash-then-repeat memory game, skinned as a control panel
+you're cracking: the grid lights a growing sequence of tiles and you tap it
+back in order. One tile in the sequence is a trap — hitting it ends the
+round with a spark and an alarm, distinct from just missing the pattern,
+which ends it with a plain buzz. Every correct round sweeps the panel green,
+and the round count and best streak read out on seven-segment digits like a
+combination lock. It's played entirely by click or tap, with no instructions
+anywhere — the panel is meant to teach itself.
 
 ## The moments that mattered
 
