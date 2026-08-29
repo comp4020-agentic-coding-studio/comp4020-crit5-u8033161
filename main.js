@@ -241,6 +241,7 @@ grid.addEventListener("click", (event) => {
 
   pluck(freqByIndex[index], CLICK_VELOCITY);
   bump(tile, "hit");
+  setTimeout(() => tile.classList.remove("hit"), 180);
 
   if (outcome.result === "correct") {
     recallIndex = outcome.recallIndex;
