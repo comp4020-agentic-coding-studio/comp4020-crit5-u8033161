@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>COMP4020 prototype</title>
+    <title>Pattern</title>
     <meta
       name="description"
-      content="Replace this with one sentence saying what this page is. A search result and a link preview both show it."
+      content="Watch the pattern, repeat it back, don't touch the trap tile — a memory game that grows one tile every round."
     />
 
     <!--
@@ -27,11 +27,25 @@
       </nav>
     </header>
     <main>
-      <h1>COMP4020 prototype</h1>
-      <p>
-        Replace this with your prototype. This week's brief is on the course website;
-        <code>spec/README.md</code> explains how the checks in this repo relate to it.
-      </p>
+      <h1>Pattern</h1>
+      <div class="hud" aria-hidden="true">
+        <span class="counter" id="round-counter"></span>
+      </div>
+      <div class="grid" id="grid" data-testid="grid">
+        <button type="button" class="tile" data-index="0" data-note="C4" aria-label="Tile 1"></button>
+        <button type="button" class="tile" data-index="1" data-note="D4" aria-label="Tile 2"></button>
+        <button type="button" class="tile" data-index="2" data-note="E4" aria-label="Tile 3"></button>
+        <button type="button" class="tile" data-index="3" data-note="G4" aria-label="Tile 4"></button>
+        <button type="button" class="tile" data-index="4" data-note="A4" aria-label="Tile 5"></button>
+        <button type="button" class="tile" data-index="5" data-note="C5" aria-label="Tile 6"></button>
+        <button type="button" class="tile" data-index="6" data-note="D5" aria-label="Tile 7"></button>
+        <button type="button" class="tile" data-index="7" data-note="E5" aria-label="Tile 8"></button>
+        <button type="button" class="tile" data-index="8" data-note="G5" aria-label="Tile 9"></button>
+      </div>
+      <div class="result" id="result" hidden aria-hidden="true">
+        <span class="result-round" id="result-round"></span>
+        <span class="result-best" id="result-best"></span>
+      </div>
     </main>
     <script type="module" src="./main.js"></script>
   </body>

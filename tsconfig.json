@@ -6,6 +6,10 @@
     // Imports name the file they mean, extension and all --- which is what
     // node itself wants when it runs a .ts file directly.
     "allowImportingTsExtensions": true,
+    // game.js is plain JS (bare stack, no build step) but spec/game.test.ts
+    // imports it directly, so tsc needs allowJs to infer its export types
+    // instead of falling back to implicit any.
+    "allowJs": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["node"],
     "strict": true,
